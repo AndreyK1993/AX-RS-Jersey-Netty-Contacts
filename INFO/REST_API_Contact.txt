@@ -1,0 +1,90 @@
+
+REST API User
+---------------
+
+Отримання всіх даних
+GET
+http://localhost:8081/api/v1/users
+
+
+Створення даних
+POST
+http://localhost:8081/api/v1/users
+
+Виконуємо окремі запити.
+Налаштування в Postman: Body, raw, JSON.
+
+{
+    "firstName": "John",
+    "lastName": "Green",
+    "email": "john@mail.com"
+}
+
+{
+    "firstName": "Bob",
+    "lastName": "Bright",
+    "email": "bob@mail.com"
+}
+
+{
+    "firstName": "Alice",
+    "lastName": "Terra",
+    "email": "alice@mail.com"
+}
+
+{
+    "firstName": "Tom",
+    "lastName": "Bright",
+    "email": "tom@mail.com"
+}
+
+{
+    "firstName": "Lucy",
+    "lastName": "Moon",
+    "email": "lucy@mail.com"
+}
+
+{
+    "firstName": "David",
+    "lastName": "Terra",
+    "email": "d.terra@mail.com"
+}
+
+{
+    "firstName": "Mary",
+    "lastName": "Waters",
+    "email": "m.waters@mail.com"
+}
+
+{
+    "firstName": "Alice",
+    "lastName": "Bright",
+    "email": "a.bri@mail.com"
+}
+
+
+Отримання даних за id
+GET
+http://localhost:8081/api/v1/users/2
+
+
+Оновлення даних за id
+PUT
+http://localhost:8081/api/v1/users/2
+
+Налаштування в Postman: Body, raw, JSON.
+
+{
+    "firstName": "Bob",
+    "lastName": "Bright",
+    "email": "superbob@mail.com"
+}
+
+Видалення даних за id
+DELETE
+http://localhost:8081/api/v1/users/5
+
+
+ДАЛІ REST-запити в
+org.example.app.service.impl.UserService
+

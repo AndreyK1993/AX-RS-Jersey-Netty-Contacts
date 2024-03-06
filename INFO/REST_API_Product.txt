@@ -1,0 +1,75 @@
+
+REST API Product
+--------------------
+
+Отримання всіх даних
+GET
+http://localhost:8081/api/v1/products
+
+
+Створення даних
+POST
+http://localhost:8081/api/v1/products
+
+Виконуємо окремі запити.
+Налаштування в Postman: Body, raw, JSON.
+
+{
+    "productName": "orange",
+    "measure": "kg",
+    "quota": 15,
+    "price": 1.59
+}
+
+{
+    "productName": "mango",
+    "measure": "item",
+    "quota": 27,
+    "price": 2.99
+}
+
+{
+    "productName": "potato",
+    "measure": "kg",
+    "quota": 34,
+    "price": 1.09
+}
+
+{
+    "productName": "kiwi",
+    "measure": "box",
+    "quota": 16,
+    "price": 3.95
+}
+
+{
+    "productName": "banana",
+    "measure": "kg",
+    "quota": 42,
+    "price": 1.95
+}
+
+
+Отримання даних за id
+GET
+http://localhost:8081/api/v1/products/3
+
+
+Оновлення даних за id
+PUT
+http://localhost:8081/api/v1/products/3
+
+Налаштування в Postman: Body, raw, JSON.
+
+{
+    "productName": "potato",
+    "measure": "kg",
+    "quota": 23,
+    "price": 1.15
+}
+
+
+Видалення даних за id
+DELETE
+http://localhost:8081/api/v1/products/4
+
