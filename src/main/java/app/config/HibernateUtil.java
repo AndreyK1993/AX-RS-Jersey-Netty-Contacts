@@ -1,6 +1,5 @@
 package app.config;
 
-import app.domain.product.Product;
 import app.domain.contact.Contact;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -27,7 +26,6 @@ public class HibernateUtil {
                 Configuration configuration = getConfiguration();
                 // В конфігурації декілька сутностей
                 configuration.addAnnotatedClass(Contact.class);
-                configuration.addAnnotatedClass(Product.class);
 
                 ServiceRegistry serviceRegistry =
                         new StandardServiceRegistryBuilder()

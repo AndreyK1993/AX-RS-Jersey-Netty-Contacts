@@ -2,7 +2,6 @@ package app;
 
 import app.config.NettyServerProvider;
 import app.service.impl.ContactService;
-import app.service.impl.ProductService;
 
 import java.net.MalformedURLException;
 import java.util.logging.Level;
@@ -19,7 +18,7 @@ public class App {
                 // Один ресурс
 //                ContactService.class
                 // Або декілька ресурсів
-                ContactService.class, ProductService.class
+                ContactService.class
         );
 
         LOGGER.log(Level.INFO, httpServer);
