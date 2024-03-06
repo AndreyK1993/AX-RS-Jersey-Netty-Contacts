@@ -1,7 +1,7 @@
 package app.repository.impl;
 
 import app.config.HibernateUtil;
-import app.domain.user.User;
+import app.domain.contact.Contact;
 import app.repository.AppRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -13,23 +13,22 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class UserRepository implements AppRepository<User> {
+public class ContactRepository implements AppRepository<Contact> {
 
     private static final Logger LOGGER =
-            Logger.getLogger(UserRepository.class.getName());
+            Logger.getLogger(ContactRepository.class.getName());
 
     @Override
-    public void create(User user) {
+    public void create(Contact contact) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // Транзакція стартує
             transaction = session.beginTransaction();
-            String hql = "INSERT INTO User (firstName, lastName, email) " +
-                    "VALUES (:firstName, :lastName, :email)";
+            String hql = "INSERT INTO Contact (firstName, phone) " +
+                    "VALUES (:firstName, :phone)";
             MutationQuery query = session.createMutationQuery(hql);
-            query.setParameter("firstName", user.getFirstName());
-            query.setParameter("lastName", user.getLastName());
-            query.setParameter("email", user.getEmail());
+            query.setParameter("firstName", contact.getFirstName());
+            query.setParameter("phone", contact.getPhone());
             query.executeUpdate();
             // Транзакція виконується
             transaction.commit();
@@ -42,13 +41,13 @@ public class UserRepository implements AppRepository<User> {
     }
 
     @Override
-    public Optional<List<User>> fetchAll() {
+    public Optional<List<Contact>> fetchAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction;
             // Транзакція стартує
             transaction = session.beginTransaction();
-            List<User> list =
-                    session.createQuery("FROM User", User.class).list();
+            List<Contact> list =
+                    session.createQuery("FROM Contact", Contact.class).list();
             // Транзакція виконується
             transaction.commit();
             // Повертаємо Optional-контейнер з колецією даних
@@ -62,19 +61,19 @@ public class UserRepository implements AppRepository<User> {
     // ---- Path Param ----------------------
 
     @Override
-    public Optional<User> fetchById(Long id) {
+    public Optional<Contact> fetchById(Long id) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // Транзакція стартує
             transaction = session.beginTransaction();
-            Query<User> query = session.createQuery("FROM User WHERE id = :id", User.class);
+            Query<Contact> query = session.createQuery("FROM Contact WHERE id = :id", Contact.class);
             query.setParameter("id", id);
             query.setMaxResults(1);
-            User user = query.uniqueResult();
+            Contact contact = query.uniqueResult();
             // Транзакція виконується
             transaction.commit();
             // Повертаємо Optional-контейнер з об'єктом
-            return Optional.of(user);
+            return Optional.of(contact);
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -87,18 +86,17 @@ public class UserRepository implements AppRepository<User> {
     }
 
     @Override
-    public void update(Long id, User user) {
+    public void update(Long id, Contact contact) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // Транзакция стартует
             transaction = session.beginTransaction();
-            String hql = "UPDATE User SET firstName = :firstName," +
-                    " lastName = :lastName, email = :email" +
+            String hql = "UPDATE Contact SET firstName = :firstName," +
+                    " phone = :phone" +
                     " WHERE id = :id";
             MutationQuery query = session.createMutationQuery(hql);
-            query.setParameter("firstName", user.getFirstName());
-            query.setParameter("lastName", user.getLastName());
-            query.setParameter("email", user.getEmail());
+            query.setParameter("firstName", contact.getFirstName());
+            query.setParameter("phone", contact.getPhone());
             query.setParameter("id", id);
             query.executeUpdate();
         } catch (Exception e) {
@@ -115,7 +113,7 @@ public class UserRepository implements AppRepository<User> {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // Транзакція стартує
             transaction = session.beginTransaction();
-            String hql = "DELETE FROM User WHERE id = :id";
+            String hql = "DELETE FROM Contact WHERE id = :id";
             MutationQuery query = session.createMutationQuery(hql);
             query.setParameter("id", id);
             query.executeUpdate();
@@ -132,15 +130,15 @@ public class UserRepository implements AppRepository<User> {
 
     // ---- Query Params ----------------------
 
-    public Optional<List<User>> fetchByFirstName(String firstName) {
-        String hql = "FROM User WHERE firstName = :firstName";
+    public Optional<List<Contact>> fetchByFirstName(String firstName) {
+        String hql = "FROM Contact WHERE firstName = :firstName";
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction;
             // Транзакція стартує
             transaction = session.beginTransaction();
-            Query<User> query = session.createQuery(hql, User.class);
+            Query<Contact> query = session.createQuery(hql, Contact.class);
             query.setParameter("firstName", firstName);
-            List<User> list = query.list();
+            List<Contact> list = query.list();
             // Транзакція виконується
             transaction.commit();
             return Optional.of(list);
@@ -149,32 +147,16 @@ public class UserRepository implements AppRepository<User> {
         }
     }
 
-    public Optional<List<User>> fetchByLastName(String lastName) {
-        String hql = "FROM User WHERE lastName = :lastName";
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction transaction;
-            // Транзакція стартує
-            transaction = session.beginTransaction();
-            Query<User> query = session.createQuery(hql, User.class);
-            query.setParameter("lastName", lastName);
-            List<User> list = query.list();
-            // Транзакція виконується
-            transaction.commit();
-            return Optional.of(list);
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-    }
 
-    public Optional<List<User>> fetchAllOrderBy(String orderBy) {
-        String hql = "FROM User ORDER BY " + orderBy;
+    public Optional<List<Contact>> fetchAllOrderBy(String orderBy) {
+        String hql = "FROM Contact ORDER BY " + orderBy;
         try (Session session =
                      HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction;
             // Транзакція стартує
             transaction = session.beginTransaction();
-            List<User> list =
-                    session.createQuery(hql, User.class)
+            List<Contact> list =
+                    session.createQuery(hql, Contact.class)
                             .list();
             // Транзакція виконується
             transaction.commit();
@@ -184,56 +166,20 @@ public class UserRepository implements AppRepository<User> {
         }
     }
 
-    public Optional<List<User>> fetchByLastNameOrderBy(String lastName, String orderBy) {
-        String hql = "FROM User WHERE lastName = :lastName ORDER BY " + orderBy;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction transaction;
-            // Транзакція стартує
-            transaction = session.beginTransaction();
-            List<User> list = session.createQuery(hql, User.class)
-                    .setParameter("lastName", lastName)
-                    .list();
-            // Транзакція виконується
-            transaction.commit();
-            return Optional.of(list);
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-    }
 
-    public Optional<List<User>> fetchBetweenIds(Integer from, Integer to) {
-        String hql = "FROM User u WHERE u.id BETWEEN :from AND :to";
+    public Optional<List<Contact>> fetchBetweenIds(Integer from, Integer to) {
+        String hql = "FROM Contact u WHERE u.id BETWEEN :from AND :to";
         try (Session session =
                      HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction;
             // Транзакція стартує
             transaction = session.beginTransaction();
-            List<User> list =
-                    session.createQuery(hql, User.class)
+            List<Contact> list =
+                    session.createQuery(hql, Contact.class)
                             .setParameter("from", from)
                             .setParameter("to", to)
                             .list();
 
-            // Транзакція виконується
-            transaction.commit();
-            return Optional.of(list);
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-    }
-
-    public Optional<List<User>> fetchLastNameIn(String lastName1, String lastName2) {
-        String hql = "FROM User u WHERE u.lastName IN (:lastName1, :lastName2)";
-        try (Session session =
-                     HibernateUtil.getSessionFactory().openSession()) {
-            Transaction transaction;
-            // Транзакція стартує
-            transaction = session.beginTransaction();
-            List<User> list =
-                    session.createQuery(hql, User.class)
-                            .setParameter("lastName1", lastName1)
-                            .setParameter("lastName2", lastName2)
-                            .list();
             // Транзакція виконується
             transaction.commit();
             return Optional.of(list);
@@ -248,30 +194,30 @@ public class UserRepository implements AppRepository<User> {
     public boolean isIdExists(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // Перевірка наявності об'єкту за певним id
-            User user = new User();
-            user.setId(id);
-            user = session.get(User.class, user.getId());
+            Contact contact = new Contact();
+            contact.setId(id);
+            contact = session.get(Contact.class, contact.getId());
 
-            if (user != null) {
-                Query<User> query = session.createQuery("FROM User", User.class);
+            if (contact != null) {
+                Query<Contact> query = session.createQuery("FROM Contact", Contact.class);
                 query.setMaxResults(1);
                 query.getResultList();
             }
-            return user != null;
+            return contact != null;
         }
     }
 
-    public Optional<User> getLastUser() {
+    public Optional<Contact> getLastContact() {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // Транзакція стартує
             transaction = session.beginTransaction();
-            Query<User> query = session.createQuery("FROM User ORDER BY id DESC", User.class);
+            Query<Contact> query = session.createQuery("FROM Contact ORDER BY id DESC", Contact.class);
             query.setMaxResults(1);
-            User user = query.uniqueResult();
+            Contact contact = query.uniqueResult();
             // Транзакція виконується
             transaction.commit();
-            return Optional.of(user);
+            return Optional.of(contact);
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();

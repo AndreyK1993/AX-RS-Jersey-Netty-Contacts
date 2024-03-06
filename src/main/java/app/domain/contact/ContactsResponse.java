@@ -1,12 +1,12 @@
-package app.domain.user;
+package app.domain.contact;
 
 import java.util.List;
 
-public class UsersResponse {
+public class ContactsResponse {
 
-    private final List<User> data;
+    private final List<Contact> data;
 
-    public UsersResponse(List<User> data) {
+    public ContactsResponse(List<Contact> data) {
         this.data = data;
     }
 

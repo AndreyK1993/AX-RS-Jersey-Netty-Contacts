@@ -1,12 +1,12 @@
 package app.service.impl;
 
+import app.domain.contact.Contact;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import app.domain.user.User;
-import app.domain.user.UserResponse;
-import app.domain.user.UsersResponse;
-import app.repository.impl.UserRepository;
+import app.domain.contact.ContactResponse;
+import app.domain.contact.ContactsResponse;
+import app.repository.impl.ContactRepository;
 import app.service.AppService;
 import app.utils.ResponseMessage;
 
@@ -15,21 +15,21 @@ import java.util.Optional;
 
 // Клас RESTful веб-сервісу,
 // який надає REST API для клієнтів.
-@Path("/api/v1/users")
+@Path("/api/v1/contacts")
 @Produces({MediaType.APPLICATION_JSON})
-public class UserService implements AppService<User> {
+public class ContactService implements AppService<Contact> {
 
-    UserRepository repository = new UserRepository();
+    ContactRepository repository = new ContactRepository();
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response create(User user) {
-        repository.create(user);
-        Optional<User> optional = repository.getLastUser();
-        UserResponse response;
+    public Response create(Contact contact) {
+        repository.create(contact);
+        Optional<Contact> optional = repository.getLastContact();
+        ContactResponse response;
         if (optional.isPresent()) {
             response =
-                    new UserResponse(optional.get());
+                    new ContactResponse(optional.get());
             return Response.ok(response.toString())
                     .status(Response.Status.CREATED).build();
         } else {
@@ -40,12 +40,12 @@ public class UserService implements AppService<User> {
 
     @GET
     public Response fetchAll() {
-        Optional<List<User>> optional = repository.fetchAll();
-        UsersResponse response;
+        Optional<List<Contact>> optional = repository.fetchAll();
+        ContactsResponse response;
         if (optional.isEmpty()) {
             return Response.noContent().build();
         } else {
-            response = new UsersResponse(optional.get());
+            response = new ContactsResponse(optional.get());
             return Response.ok(response.toString()).build();
         }
     }
@@ -56,10 +56,10 @@ public class UserService implements AppService<User> {
     @GET
     @Path("{id: [0-9]+}")
     public Response fetchById(@PathParam("id") Long id) {
-        Optional<User> optional = repository.fetchById(id);
+        Optional<Contact> optional = repository.fetchById(id);
         if (optional.isPresent()) {
-            UserResponse response =
-                    new UserResponse(optional.get());
+            ContactResponse response =
+                    new ContactResponse(optional.get());
             return Response.ok(response.toString())
                     .status(Response.Status.CREATED).build();
         } else {
@@ -74,12 +74,12 @@ public class UserService implements AppService<User> {
     @PUT
     @Path("{id: [0-9]+}")
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response update(@PathParam("id") Long id, User user) {
-        Optional<User> optional = repository.fetchById(id);
+    public Response update(@PathParam("id") Long id, Contact contact) {
+        Optional<Contact> optional = repository.fetchById(id);
         if (optional.isPresent()) {
-            repository.update(id, user);
-            UserResponse response =
-                    new UserResponse(optional.get());
+            repository.update(id, contact);
+            ContactResponse response =
+                    new ContactResponse(optional.get());
             return Response.ok(response.toString())
                     .status(Response.Status.CREATED).build();
         } else {
@@ -117,63 +117,29 @@ public class UserService implements AppService<User> {
     */
     @GET
     @Path("/query-by-firstname")
-    public Response getUsersByFistName(@QueryParam("firstName") String firstName) {
-        Optional<List<User>> optional = repository.fetchByFirstName(firstName);
+    public Response getContactsByFirstName(@QueryParam("firstName") String firstName) {
+        Optional<List<Contact>> optional = repository.fetchByFirstName(firstName);
         if (optional.isEmpty()) {
             return Response.noContent().build();
         }
-        UsersResponse response = new UsersResponse(optional.get());
-        return Response.ok(response.toString()).build();
-    }
-
-    /*
-        http://localhost:8081/api/v1/users/query-by-lastname?lastName=Bright
-        http://localhost:8081/api/v1/users/query-by-lastname?lastName=Terra
-    */
-    @GET
-    @Path("/query-by-lastname")
-    public Response getUsersByLastName(@QueryParam("lastName") String lastName) {
-        Optional<List<User>> optional = repository.fetchByLastName(lastName);
-        if (optional.isEmpty()) {
-            return Response.noContent().build();
-        }
-        UsersResponse response = new UsersResponse(optional.get());
+        ContactsResponse response = new ContactsResponse(optional.get());
         return Response.ok(response.toString()).build();
     }
 
     /*
         http://localhost:8081/api/v1/users/query-order-by?orderBy=firstName
-        http://localhost:8081/api/v1/users/query-order-by?orderBy=lastName
+
     */
     @GET
     @Path("/query-order-by")
-    public Response getUsersOrderBy(
+    public Response getContactsOrderBy(
             @QueryParam("orderBy") String orderBy
     ) {
-        Optional<List<User>> optional = repository.fetchAllOrderBy(orderBy);
+        Optional<List<Contact>> optional = repository.fetchAllOrderBy(orderBy);
         if (optional.isEmpty()) {
             return Response.noContent().build();
         }
-        UsersResponse response = new UsersResponse(optional.get());
-        return Response.ok(response.toString()).build();
-    }
-
-
-    /*
-        http://localhost:8081/api/v1/users/query-by-lastname-order-by-firstname?lastName=Bright&orderBy=firstName
-    */
-    @GET
-    @Path("/query-by-lastname-order-by-firstname")
-    public Response getUsersByLastNameOrderByFirstName(
-            @QueryParam("lastName") String lastName,
-            @QueryParam("orderBy") String orderBy
-    ) {
-        Optional<List<User>> optional =
-                repository.fetchByLastNameOrderBy(lastName, orderBy);
-        if (optional.isEmpty()) {
-            return Response.noContent().build();
-        }
-        UsersResponse response = new UsersResponse(optional.get());
+        ContactsResponse response = new ContactsResponse(optional.get());
         return Response.ok(response.toString()).build();
     }
 
@@ -182,33 +148,16 @@ public class UserService implements AppService<User> {
     */
     @GET
     @Path("/query-between-ids")
-    public Response getUsersBetweenIds(
+    public Response getContactsBetweenIds(
             @QueryParam("from") int from,
             @QueryParam("to") int to
     ) {
-        Optional<List<User>> optional = repository.fetchBetweenIds(from, to);
+        Optional<List<Contact>> optional = repository.fetchBetweenIds(from, to);
         if (optional.isEmpty()) {
             return Response.noContent().build();
         }
-        UsersResponse response = new UsersResponse(optional.get());
+        ContactsResponse response = new ContactsResponse(optional.get());
         return Response.ok(response.toString()).build();
     }
 
-    /*
-        http://localhost:8081/api/v1/users/query-lastname-in?lastName1=Terra&lastName2=Bright
-    */
-    @GET
-    @Path("/query-lastname-in")
-    public Response getUsersLastNameIn(
-            @QueryParam("lastName1") String lastName1,
-            @QueryParam("lastName2") String lastName2
-    ) {
-        Optional<List<User>> optional =
-                repository.fetchLastNameIn(lastName1, lastName2);
-        if (optional.isEmpty()) {
-            return Response.noContent().build();
-        }
-        UsersResponse response = new UsersResponse(optional.get());
-        return Response.ok(response.toString()).build();
-    }
 }

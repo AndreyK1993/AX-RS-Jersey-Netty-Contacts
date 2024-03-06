@@ -1,4 +1,4 @@
-package app.domain.user;
+package app.domain.contact;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "contacts")
+public class Contact {
 
     // @Id
     // Визначає первинний ключ об'єкта.
@@ -36,19 +36,15 @@ public class User {
     @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "last_name")
-    private String lastName;
-
-    @Column(name = "email")
-    private String email;
+    @Column(name = "Phone")
+    private String phone;
 
     @Override
     public String toString() {
         return "{" +
                 "\"id\" : " + id +
                 ", \"firstName\" : \"" + firstName + "\"" +
-                ", \"lastName\" : \"" + lastName + "\"" +
-                ", \"email\" : \"" + email + "\"" +
+                ",  \"phone\" : \"" + phone + "\"" +
                 "}";
     }
 }
